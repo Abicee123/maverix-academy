@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { ChevronRight, Cpu, X } from 'lucide-react';
+import logo from "./assets/Logo.png";
 
 const SECTIONS = [
   { id: 'home', title: 'Home' },
@@ -60,7 +61,7 @@ const BENEFITS_DETAILS = {
 const Logo = () => (
   <div className="flex items-center gap-2">
     <img 
-      src="/assets/Logo.png" 
+      src={logo} 
       alt="Maverix Academy Logo" 
       className="w-8 h-8 object-contain"
       onError={(e) => {
@@ -523,7 +524,7 @@ const BookAssembler = ({ scrollYProgress }) => {
             <div className="absolute inset-2 border border-[#FFFFFF]/10 rounded-r-xl border-dashed" />
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
               <img 
-                src="/assets/Logo.png" 
+                src={logo}
                 alt="Maverix Logo" 
                 className="w-24 h-24 object-contain mb-6 drop-shadow-[0_0_15px_rgba(22,197,216,0.5)]"
                 onError={(e) => e.target.style.display = 'none'}
@@ -588,7 +589,7 @@ const BookAssembler = ({ scrollYProgress }) => {
           >
             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/leather.png')]" />
             <img 
-              src="/assets/Logo.png" 
+              src={logo} 
               alt="Maverix Logo" 
               className="w-12 h-12 object-contain opacity-20 filter grayscale"
               onError={(e) => e.target.style.display = 'none'}
