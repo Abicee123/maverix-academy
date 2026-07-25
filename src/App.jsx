@@ -515,28 +515,28 @@ const BookAssembler = ({ scrollYProgress }) => {
             <span className="absolute bottom-[-50px] left-[-150px] text-[#16C5D8]/60 font-mono text-[10px] tracking-widest">RENDER_PASS: ACTIVE</span>
           </motion.div>
 
-          {/* FRONT COVER */}
+          {/* FRONT COVER (Updated to White background) */}
           <motion.div 
             style={{ x: xFront, y: yFront, z: zFront }}
-            className="absolute inset-0 bg-[#102A43] rounded-r-2xl shadow-2xl border-l-4 border-[#0FA3B1]/50 backface-hidden transform-style-3d"
+            className="absolute inset-0 bg-white rounded-r-2xl shadow-2xl border-l-4 border-[#0FA3B1]/50 backface-hidden transform-style-3d"
           >
-            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/leather.png')]" />
-            <div className="absolute inset-2 border border-[#FFFFFF]/10 rounded-r-xl border-dashed" />
+            <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/leather.png')]" />
+            <div className="absolute inset-2 border border-[#102A43]/10 rounded-r-xl border-dashed" />
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
               <img 
                 src={logo}
                 alt="Maverix Logo" 
-                className="w-24 h-24 object-contain mb-6 drop-shadow-[0_0_15px_rgba(22,197,216,0.5)]"
+                className="w-24 h-24 object-contain mb-6"
                 onError={(e) => e.target.style.display = 'none'}
               />
-              <h1 className="text-2xl font-playfair text-[#FFFFFF] tracking-widest text-center shadow-black/50 drop-shadow-md">
+              <h1 className="text-2xl font-playfair text-[#102A43] tracking-widest text-center">
                 MAVERIX
               </h1>
-              <h2 className="text-[10px] font-inter text-[#16C5D8] tracking-[0.3em] uppercase mt-2">
+              <h2 className="text-[10px] font-inter text-[#0FA3B1] tracking-[0.3em] uppercase mt-2">
                 Academy
               </h2>
-              <div className="w-12 h-[1px] bg-[#16C5D8]/50 my-6" />
-              <p className="text-[#FFFFFF]/60 text-[8px] uppercase tracking-widest text-center font-mono">
+              <div className="w-12 h-[1px] bg-[#102A43]/20 my-6" />
+              <p className="text-[#102A43]/60 text-[8px] uppercase tracking-widest text-center font-mono">
                 Vol I. Advanced BIM<br/>& Architectural Vis.
               </p>
             </div>
@@ -589,7 +589,7 @@ const BookAssembler = ({ scrollYProgress }) => {
           >
             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/leather.png')]" />
             <img 
-              src={logo} 
+              src={logo}
               alt="Maverix Logo" 
               className="w-12 h-12 object-contain opacity-20 filter grayscale"
               onError={(e) => e.target.style.display = 'none'}
