@@ -470,6 +470,39 @@ const BookAssembler = ({ scrollYProgress }) => {
             <div className="w-[1000px] h-[1px] bg-gradient-to-r from-transparent via-[#16C5D8]/40 to-transparent absolute" />
             <div className="w-[1px] h-[1000px] bg-gradient-to-b from-transparent via-[#16C5D8]/40 to-transparent absolute" />
             
+            {/* MOBILE-ONLY EXTRA HUD DETAILS */}
+            <div className="absolute inset-0 flex items-center justify-center md:hidden">
+              {/* Extra technical circles */}
+              <div className="w-[700px] h-[700px] absolute border border-[#16C5D8]/10 rounded-full" />
+              <div className="w-[500px] h-[500px] absolute border-[2px] border-dotted border-[#0B4F8C]/30 rounded-full" />
+              
+              {/* Polar Grid / Axes */}
+              <div className="w-[1200px] h-[1px] bg-[#16C5D8]/20 absolute rotate-45" />
+              <div className="w-[1200px] h-[1px] bg-[#16C5D8]/20 absolute -rotate-45" />
+              <div className="w-[1200px] h-[1px] bg-[#0FA3B1]/10 absolute rotate-[30deg]" />
+              <div className="w-[1200px] h-[1px] bg-[#0FA3B1]/10 absolute rotate-[60deg]" />
+              <div className="w-[1200px] h-[1px] bg-[#0FA3B1]/10 absolute -rotate-[30deg]" />
+              <div className="w-[1200px] h-[1px] bg-[#0FA3B1]/10 absolute -rotate-[60deg]" />
+              
+              {/* Angle Notations */}
+              <span className="absolute top-[18%] left-[25%] text-[#0FA3B1]/70 font-mono text-[10px] bg-white/20 px-1 rounded backdrop-blur-sm">∡ 45°</span>
+              <span className="absolute bottom-[18%] right-[25%] text-[#0FA3B1]/70 font-mono text-[10px] bg-white/20 px-1 rounded backdrop-blur-sm">∡ 225°</span>
+              <span className="absolute top-[28%] right-[20%] text-[#0FA3B1]/70 font-mono text-[10px] bg-white/20 px-1 rounded backdrop-blur-sm">∡ 315°</span>
+              
+              {/* Center target node */}
+              <div className="w-[200px] h-[200px] absolute border border-[#16C5D8]/20 rounded-full flex items-center justify-center">
+                   <div className="w-[10px] h-[10px] border border-[#16C5D8]/50 rounded-full" />
+              </div>
+              
+              {/* Extra Data Labels */}
+              <span className="absolute top-[-120px] right-[50px] text-[#16C5D8]/70 font-mono text-[10px] tracking-widest border border-[#16C5D8]/30 px-2 py-1 rounded bg-white/20 backdrop-blur-sm">
+                VECTOR_FIELD: ON
+              </span>
+              <span className="absolute bottom-[-120px] left-[50px] text-[#16C5D8]/70 font-mono text-[10px] tracking-widest border border-[#16C5D8]/30 px-2 py-1 rounded bg-white/20 backdrop-blur-sm">
+                SYS.094.BIM
+              </span>
+            </div>
+
             <motion.div style={{ rotateZ: hudRotateReverse }} className="absolute w-[600px] h-[600px]">
               <div className="absolute top-0 left-1/2 w-2 h-2 bg-[#16C5D8] rounded-full shadow-[0_0_10px_#16C5D8]" />
               <div className="absolute bottom-0 right-1/4 w-1 h-1 bg-[#0FA3B1] rounded-full shadow-[0_0_5px_#0FA3B1]" />
