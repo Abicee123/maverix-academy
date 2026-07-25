@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { ChevronRight, Cpu, X } from 'lucide-react';
 
 const SECTIONS = [
@@ -136,7 +136,6 @@ export default function App() {
         </div>
       </nav>
 
-      {}
       <main className="relative z-10 w-full max-w-7xl mx-auto px-6">
         
         {/* HERO SECTION */}
@@ -181,7 +180,7 @@ export default function App() {
           </div>
         </section>
 
-        {}
+        {/* SOFTWARE SECTION */}
         <section id="software" className="min-h-screen flex items-center py-20">
           <div className="w-full md:w-1/2">
             <h2 className="text-4xl font-playfair mb-8 text-[#102A43]">Software You<br/>Will Master</h2>
@@ -261,7 +260,7 @@ export default function App() {
           </div>
         </section>
 
-        {}
+        {/* ENROLLMENT SECTION */}
         <section id="enrollment" className="min-h-screen flex items-center py-20 relative z-20">
           <div className="w-full md:w-1/2">
             
@@ -328,7 +327,7 @@ export default function App() {
           </div>
         </section>
 
-        {}
+        {/* FOOTER */}
         <footer className="w-full md:w-1/2 py-12 border-t border-[#102A43]/10 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-[#102A43]/50 uppercase tracking-widest relative z-20">
           <p>© 2026 MAVERIX ACADEMY.</p>
           <div className="flex gap-6">
@@ -339,10 +338,10 @@ export default function App() {
 
       </main>
 
-      {}
+      {/* 3D BOOK ASSEMBLER */}
       <BookAssembler scrollYProgress={scrollYProgress} />
 
-      {}
+      {/* MODALS */}
       <AnimatePresence>
         {activeModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -424,113 +423,144 @@ const BookAssembler = ({ scrollYProgress }) => {
   const hudRotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
   const hudRotateReverse = useTransform(scrollYProgress, [0, 1], [0, -180]);
 
+  // Premium feature: Mouse tracking for dynamic tilt when user is not scrolling
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Smooth out the mouse movements using physics-based springs
+  const smoothMouseX = useSpring(mouseX, { stiffness: 50, damping: 20, mass: 0.5 });
+  const smoothMouseY = useSpring(mouseY, { stiffness: 50, damping: 20, mass: 0.5 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const { innerWidth, innerHeight } = window;
+      // Calculate rotation based on cursor position relative to the center of the screen
+      // Range is mapped to subtle rotation angles (-15 to +15 degrees)
+      const rotateXVal = ((e.clientY / innerHeight) - 0.5) * -30; 
+      const rotateYVal = ((e.clientX / innerWidth) - 0.5) * 30;
+
+      mouseX.set(rotateYVal);
+      mouseY.set(rotateXVal);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
+
   return (
     <div className="fixed top-0 right-0 w-full md:w-1/2 h-full pointer-events-none flex items-center justify-center z-0 perspective-[2000px]">
+      {/* Outer wrapper manages the macro scroll-based rotations */}
       <motion.div 
         style={{ rotateY, rotateX, y: masterY }}
-        className="relative w-[320px] h-[450px] transform-style-3d"
+        className="transform-style-3d"
       >
-        {}
-        <motion.div 
-          style={{ rotateZ: hudRotate }}
-          className="absolute inset-0 flex items-center justify-center pointer-events-none transform-style-3d z-[-10]"
+        {/* Inner wrapper manages the micro mouse-based floating tilts */}
+        <motion.div
+          style={{ rotateX: smoothMouseY, rotateY: smoothMouseX }}
+          className="relative w-[320px] h-[450px] transform-style-3d"
         >
-          <div className="w-[800px] h-[800px] absolute border-[0.5px] border-[#16C5D8]/20 rounded-full" />
-          <div className="w-[600px] h-[600px] absolute border-[1px] border-dashed border-[#16C5D8]/30 rounded-full" />
-          <div className="w-[400px] h-[400px] absolute border-[0.5px] border-[#0B4F8C]/20 rounded-full" />
-          <div className="w-[1000px] h-[1px] bg-gradient-to-r from-transparent via-[#16C5D8]/40 to-transparent absolute" />
-          <div className="w-[1px] h-[1000px] bg-gradient-to-b from-transparent via-[#16C5D8]/40 to-transparent absolute" />
-          
-          <motion.div style={{ rotateZ: hudRotateReverse }} className="absolute w-[600px] h-[600px]">
-            <div className="absolute top-0 left-1/2 w-2 h-2 bg-[#16C5D8] rounded-full shadow-[0_0_10px_#16C5D8]" />
-            <div className="absolute bottom-0 right-1/4 w-1 h-1 bg-[#0FA3B1] rounded-full shadow-[0_0_5px_#0FA3B1]" />
+          {/* HUD ELEMENTS */}
+          <motion.div 
+            style={{ rotateZ: hudRotate }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none transform-style-3d z-[-10]"
+          >
+            <div className="w-[800px] h-[800px] absolute border-[0.5px] border-[#16C5D8]/20 rounded-full" />
+            <div className="w-[600px] h-[600px] absolute border-[1px] border-dashed border-[#16C5D8]/30 rounded-full" />
+            <div className="w-[400px] h-[400px] absolute border-[0.5px] border-[#0B4F8C]/20 rounded-full" />
+            <div className="w-[1000px] h-[1px] bg-gradient-to-r from-transparent via-[#16C5D8]/40 to-transparent absolute" />
+            <div className="w-[1px] h-[1000px] bg-gradient-to-b from-transparent via-[#16C5D8]/40 to-transparent absolute" />
+            
+            <motion.div style={{ rotateZ: hudRotateReverse }} className="absolute w-[600px] h-[600px]">
+              <div className="absolute top-0 left-1/2 w-2 h-2 bg-[#16C5D8] rounded-full shadow-[0_0_10px_#16C5D8]" />
+              <div className="absolute bottom-0 right-1/4 w-1 h-1 bg-[#0FA3B1] rounded-full shadow-[0_0_5px_#0FA3B1]" />
+            </motion.div>
+
+            <span className="absolute top-[-100px] left-[100px] text-[#16C5D8]/60 font-mono text-[10px] tracking-widest">θ = 45.02°</span>
+            <span className="absolute bottom-[200px] right-[-200px] text-[#16C5D8]/60 font-mono text-[10px] tracking-widest">X: 120.4, Y: -45.2, Z: 1.0</span>
+            <span className="absolute top-[200px] right-[100px] text-[#16C5D8]/60 font-mono text-[10px] tracking-widest">Δv = a(1 - cos θ)</span>
+            <span className="absolute bottom-[-50px] left-[-150px] text-[#16C5D8]/60 font-mono text-[10px] tracking-widest">RENDER_PASS: ACTIVE</span>
           </motion.div>
 
-          <span className="absolute top-[-100px] left-[100px] text-[#16C5D8]/60 font-mono text-[10px] tracking-widest">θ = 45.02°</span>
-          <span className="absolute bottom-[200px] right-[-200px] text-[#16C5D8]/60 font-mono text-[10px] tracking-widest">X: 120.4, Y: -45.2, Z: 1.0</span>
-          <span className="absolute top-[200px] right-[100px] text-[#16C5D8]/60 font-mono text-[10px] tracking-widest">Δv = a(1 - cos θ)</span>
-          <span className="absolute bottom-[-50px] left-[-150px] text-[#16C5D8]/60 font-mono text-[10px] tracking-widest">RENDER_PASS: ACTIVE</span>
-        </motion.div>
+          {/* FRONT COVER */}
+          <motion.div 
+            style={{ x: xFront, y: yFront, z: zFront }}
+            className="absolute inset-0 bg-[#102A43] rounded-r-2xl shadow-2xl border-l-4 border-[#0FA3B1]/50 backface-hidden transform-style-3d"
+          >
+            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/leather.png')]" />
+            <div className="absolute inset-2 border border-[#FFFFFF]/10 rounded-r-xl border-dashed" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+              <img 
+                src="/assets/Logo.png" 
+                alt="Maverix Logo" 
+                className="w-24 h-24 object-contain mb-6 drop-shadow-[0_0_15px_rgba(22,197,216,0.5)]"
+                onError={(e) => e.target.style.display = 'none'}
+              />
+              <h1 className="text-2xl font-playfair text-[#FFFFFF] tracking-widest text-center shadow-black/50 drop-shadow-md">
+                MAVERIX
+              </h1>
+              <h2 className="text-[10px] font-inter text-[#16C5D8] tracking-[0.3em] uppercase mt-2">
+                Academy
+              </h2>
+              <div className="w-12 h-[1px] bg-[#16C5D8]/50 my-6" />
+              <p className="text-[#FFFFFF]/60 text-[8px] uppercase tracking-widest text-center font-mono">
+                Vol I. Advanced BIM<br/>& Architectural Vis.
+              </p>
+            </div>
+          </motion.div>
 
-        {/* FRONT COVER */}
-        <motion.div 
-          style={{ x: xFront, y: yFront, z: zFront }}
-          className="absolute inset-0 bg-[#102A43] rounded-r-2xl shadow-2xl border-l-4 border-[#0FA3B1]/50 backface-hidden transform-style-3d"
-        >
-          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/leather.png')]" />
-          <div className="absolute inset-2 border border-[#FFFFFF]/10 rounded-r-xl border-dashed" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+          {/* PAGE 1 */}
+          <motion.div 
+            style={{ x: xPage1, y: yPage1, z: zPage1 }}
+            className="absolute inset-0 bg-white rounded-r-xl shadow-lg border-l border-[#102A43]/10 overflow-hidden transform-style-3d"
+          >
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#0FA3B11A_1px,transparent_1px),linear-gradient(to_bottom,#0FA3B11A_1px,transparent_1px)] bg-[size:10px_10px]" />
+            <div className="p-6 relative h-full flex flex-col">
+              <h3 className="text-[#102A43] font-mono text-[10px] uppercase tracking-[0.2em] mb-4 border-b border-[#102A43]/10 pb-2">BIM Coordinate Mapping</h3>
+              <div className="flex-1 border-2 border-[#0B4F8C] relative bg-white">
+                <div className="absolute top-4 left-4 w-16 h-16 border border-[#16C5D8] rounded-full flex items-center justify-center text-[#102A43] text-[8px] font-mono">TOP</div>
+                <svg className="absolute inset-0 w-full h-full opacity-60" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path d="M 20 80 L 80 80 L 80 20 L 50 10 L 20 20 Z" fill="none" stroke="#102A43" strokeWidth="0.5"/>
+                  <line x1="20" y1="20" x2="80" y2="80" stroke="#0FA3B1" strokeWidth="0.5" strokeDasharray="2,2"/>
+                  <line x1="20" y1="80" x2="80" y2="20" stroke="#0FA3B1" strokeWidth="0.5" strokeDasharray="2,2"/>
+                </svg>
+              </div>
+              <p className="text-[#102A43]/60 font-mono text-[6px] mt-4 uppercase">Fig 1. Spatial alignment grid for K-SMART structures.</p>
+            </div>
+          </motion.div>
+
+          {/* PAGE 2 */}
+          <motion.div 
+            style={{ x: xPage2, y: yPage2, z: zPage2 }}
+            className="absolute inset-0 bg-white rounded-r-xl shadow-lg border-l border-[#102A43]/10 overflow-hidden transform-style-3d"
+          >
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#102A4305_1px,transparent_1px),linear-gradient(to_bottom,#102A4305_1px,transparent_1px)] bg-[size:20px_20px]" />
+            <div className="p-6 relative h-full flex flex-col justify-center items-center">
+              <h3 className="text-[#102A43] font-playfair italic text-lg mb-6 border-b border-[#102A43]/20 pb-2">Structural Dynamics</h3>
+              <div className="text-[#102A43] font-mono text-[10px] space-y-4 text-center">
+                <p>M y'' + C y' + K y = F(t)</p>
+                <div className="w-full h-[1px] bg-[#0FA3B1]/30 my-4" />
+                <p>ω_n = √(K / M)</p>
+                <p>ζ = C / (2 * √(K * M))</p>
+                <div className="w-full h-[1px] bg-[#0FA3B1]/30 my-4" />
+                <p className="text-[7px] text-[#102A43]/50">Applied in Revit & AutoCAD</p>
+              </div>
+              <div className="absolute bottom-6 right-6 w-12 h-12 rounded-full border border-[#16C5D8]/40 border-dashed animate-[spin_10s_linear_infinite]" />
+            </div>
+          </motion.div>
+
+          {/* BACK COVER */}
+          <motion.div 
+            style={{ x: xBack, y: yBack, z: zBack }}
+            className="absolute inset-0 bg-[#102A43] rounded-r-2xl shadow-xl border-r border-[#102A43] transform-style-3d flex items-center justify-center"
+          >
+            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/leather.png')]" />
             <img 
               src="/assets/Logo.png" 
               alt="Maverix Logo" 
-              className="w-24 h-24 object-contain mb-6 drop-shadow-[0_0_15px_rgba(22,197,216,0.5)]"
+              className="w-12 h-12 object-contain opacity-20 filter grayscale"
               onError={(e) => e.target.style.display = 'none'}
             />
-            <h1 className="text-2xl font-playfair text-[#FFFFFF] tracking-widest text-center shadow-black/50 drop-shadow-md">
-              MAVERIX
-            </h1>
-            <h2 className="text-[10px] font-inter text-[#16C5D8] tracking-[0.3em] uppercase mt-2">
-              Academy
-            </h2>
-            <div className="w-12 h-[1px] bg-[#16C5D8]/50 my-6" />
-            <p className="text-[#FFFFFF]/60 text-[8px] uppercase tracking-widest text-center font-mono">
-              Vol I. Advanced BIM<br/>& Architectural Vis.
-            </p>
-          </div>
-        </motion.div>
-
-        {/* PAGE 1 */}
-        <motion.div 
-          style={{ x: xPage1, y: yPage1, z: zPage1 }}
-          className="absolute inset-0 bg-white rounded-r-xl shadow-lg border-l border-[#102A43]/10 overflow-hidden transform-style-3d"
-        >
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#0FA3B11A_1px,transparent_1px),linear-gradient(to_bottom,#0FA3B11A_1px,transparent_1px)] bg-[size:10px_10px]" />
-          <div className="p-6 relative h-full flex flex-col">
-            <h3 className="text-[#102A43] font-mono text-[10px] uppercase tracking-[0.2em] mb-4 border-b border-[#102A43]/10 pb-2">BIM Coordinate Mapping</h3>
-            <div className="flex-1 border-2 border-[#0B4F8C] relative bg-white">
-              <div className="absolute top-4 left-4 w-16 h-16 border border-[#16C5D8] rounded-full flex items-center justify-center text-[#102A43] text-[8px] font-mono">TOP</div>
-              <svg className="absolute inset-0 w-full h-full opacity-60" viewBox="0 0 100 100" preserveAspectRatio="none">
-                <path d="M 20 80 L 80 80 L 80 20 L 50 10 L 20 20 Z" fill="none" stroke="#102A43" strokeWidth="0.5"/>
-                <line x1="20" y1="20" x2="80" y2="80" stroke="#0FA3B1" strokeWidth="0.5" strokeDasharray="2,2"/>
-                <line x1="20" y1="80" x2="80" y2="20" stroke="#0FA3B1" strokeWidth="0.5" strokeDasharray="2,2"/>
-              </svg>
-            </div>
-            <p className="text-[#102A43]/60 font-mono text-[6px] mt-4 uppercase">Fig 1. Spatial alignment grid for K-SMART structures.</p>
-          </div>
-        </motion.div>
-
-        {/* PAGE 2 */}
-        <motion.div 
-          style={{ x: xPage2, y: yPage2, z: zPage2 }}
-          className="absolute inset-0 bg-white rounded-r-xl shadow-lg border-l border-[#102A43]/10 overflow-hidden transform-style-3d"
-        >
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#102A4305_1px,transparent_1px),linear-gradient(to_bottom,#102A4305_1px,transparent_1px)] bg-[size:20px_20px]" />
-          <div className="p-6 relative h-full flex flex-col justify-center items-center">
-            <h3 className="text-[#102A43] font-playfair italic text-lg mb-6 border-b border-[#102A43]/20 pb-2">Structural Dynamics</h3>
-            <div className="text-[#102A43] font-mono text-[10px] space-y-4 text-center">
-              <p>M y'' + C y' + K y = F(t)</p>
-              <div className="w-full h-[1px] bg-[#0FA3B1]/30 my-4" />
-              <p>ω_n = √(K / M)</p>
-              <p>ζ = C / (2 * √(K * M))</p>
-              <div className="w-full h-[1px] bg-[#0FA3B1]/30 my-4" />
-              <p className="text-[7px] text-[#102A43]/50">Applied in Revit & AutoCAD</p>
-            </div>
-            <div className="absolute bottom-6 right-6 w-12 h-12 rounded-full border border-[#16C5D8]/40 border-dashed animate-[spin_10s_linear_infinite]" />
-          </div>
-        </motion.div>
-
-        {/* BACK COVER */}
-        <motion.div 
-          style={{ x: xBack, y: yBack, z: zBack }}
-          className="absolute inset-0 bg-[#102A43] rounded-r-2xl shadow-xl border-r border-[#102A43] transform-style-3d flex items-center justify-center"
-        >
-          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/leather.png')]" />
-          <img 
-            src="/assets/Logo.png" 
-            alt="Maverix Logo" 
-            className="w-12 h-12 object-contain opacity-20 filter grayscale"
-            onError={(e) => e.target.style.display = 'none'}
-          />
+          </motion.div>
         </motion.div>
       </motion.div>
     </div>
