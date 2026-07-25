@@ -141,7 +141,7 @@ export default function App() {
         {/* HERO SECTION */}
         <section id="home" className="min-h-[90vh] flex items-center pt-32">
           <div className="w-full md:w-1/2 relative">
-            <div className="absolute inset-0 bg-white/40 blur-3xl rounded-full md:hidden z-[-1]" />
+            <div className="absolute -inset-10 bg-white/80 blur-2xl rounded-full md:hidden z-[-1]" />
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
               <h1 className="text-5xl md:text-7xl font-playfair mb-6 leading-[1.1] text-[#102A43]">
                 Build Skills.<br /> Build Portfolio.<br /> <span className="text-[#0B4F8C]">Build Your Future.</span>
@@ -448,11 +448,11 @@ const BookAssembler = ({ scrollYProgress }) => {
   }, [mouseX, mouseY]);
 
   return (
-    <div className="fixed top-0 right-0 w-full md:w-1/2 h-full pointer-events-none flex items-center justify-center z-0 perspective-[2000px]">
+    <div className="fixed top-0 right-0 w-full md:w-1/2 h-full pointer-events-none flex items-center justify-center z-0 perspective-[2000px] opacity-25 md:opacity-100 transition-opacity duration-300">
       {/* Outer wrapper manages the macro scroll-based rotations */}
       <motion.div 
         style={{ rotateY, rotateX, y: masterY }}
-        className="transform-style-3d"
+        className="transform-style-3d scale-[0.6] sm:scale-75 md:scale-100 translate-x-[15%] md:translate-x-0"
       >
         {/* Inner wrapper manages the micro mouse-based floating tilts */}
         <motion.div
