@@ -402,20 +402,23 @@ const BookAssembler = ({ scrollYProgress }) => {
   const rotateX = useTransform(scrollYProgress, [0, 1], [25, 10]);
   const assembleProgress = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
+  // Shift the entire book down by 120px when exploded (at the top of the page) so the logo is clearly visible
+  const masterY = useTransform(assembleProgress, [0, 1], [0, 120]);
+
   const xFront = useTransform(assembleProgress, [0, 1], [0, 300]);
-  const yFront = useTransform(assembleProgress, [0, 1], [0, -200]);
+  const yFront = useTransform(assembleProgress, [0, 1], [0, -80]);
   const zFront = useTransform(assembleProgress, [0, 1], [15, 200]);
 
   const xPage1 = useTransform(assembleProgress, [0, 1], [0, 150]);
-  const yPage1 = useTransform(assembleProgress, [0, 1], [0, -100]);
+  const yPage1 = useTransform(assembleProgress, [0, 1], [0, -40]);
   const zPage1 = useTransform(assembleProgress, [0, 1], [10, 100]);
 
   const xPage2 = useTransform(assembleProgress, [0, 1], [0, -150]);
-  const yPage2 = useTransform(assembleProgress, [0, 1], [0, 100]);
+  const yPage2 = useTransform(assembleProgress, [0, 1], [0, 40]);
   const zPage2 = useTransform(assembleProgress, [0, 1], [5, -100]);
 
   const xBack = useTransform(assembleProgress, [0, 1], [0, -300]);
-  const yBack = useTransform(assembleProgress, [0, 1], [0, 200]);
+  const yBack = useTransform(assembleProgress, [0, 1], [0, 80]);
   const zBack = useTransform(assembleProgress, [0, 1], [0, -200]);
 
   const hudRotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
@@ -424,10 +427,10 @@ const BookAssembler = ({ scrollYProgress }) => {
   return (
     <div className="fixed top-0 right-0 w-full md:w-1/2 h-full pointer-events-none flex items-center justify-center z-0 perspective-[2000px]">
       <motion.div 
-        style={{ rotateY, rotateX }}
+        style={{ rotateY, rotateX, y: masterY }}
         className="relative w-[320px] h-[450px] transform-style-3d"
       >
-        {/* HUD */}
+        {}
         <motion.div 
           style={{ rotateZ: hudRotate }}
           className="absolute inset-0 flex items-center justify-center pointer-events-none transform-style-3d z-[-10]"
