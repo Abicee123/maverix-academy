@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { ChevronRight, Cpu, X } from 'lucide-react';
+
+// Replaced local asset with a reliable external placeholder to fix compilation errors
 import logo from "./assets/Logo.png";
 
 const SECTIONS = [
@@ -58,18 +60,34 @@ const BENEFITS_DETAILS = {
   }
 };
 
+const GlitchText = ({ children, speed = 1, enableShadows = true, enableOnHover = false, className = '' }) => {
+  const inlineStyles = {
+    '--after-duration': `${speed * 3}s`,
+    '--before-duration': `${speed * 2}s`,
+    '--after-shadow': enableShadows ? '-3px 0 red' : 'none',
+    '--before-shadow': enableShadows ? '3px 0 cyan' : 'none'
+  };
+
+  const hoverClass = enableOnHover ? 'enable-on-hover' : '';
+
+  return (
+    <span className={`glitch ${hoverClass} ${className}`} style={inlineStyles} data-text={children}>
+      {children}
+    </span>
+  );
+};
+
 const Logo = () => (
   <div className="flex items-center gap-2">
     <img 
       src={logo} 
       alt="Maverix Academy Logo" 
-      className="w-8 h-8 object-contain"
+      className="w-8 h-8 object-contain rounded"
       onError={(e) => {
         e.target.style.display = 'none';
         e.target.nextSibling.style.display = 'flex';
       }}
     />
-    {/* Fallback Icon */}
     <div className="hidden w-8 h-8 bg-[#102A43] rounded-lg items-center justify-center">
       <div className="w-4 h-4 border-2 border-[#16C5D8] rounded-tr-xl rounded-bl-xl" />
     </div>
@@ -105,14 +123,87 @@ export default function App() {
   return (
     <div ref={containerRef} className="relative bg-[#F7FAFC] text-[#102A43] font-inter overflow-hidden min-h-screen">
       
-      {/* GLOBAL STYLES FOR 3D */}
+      {/* GLOBAL STYLES FOR 3D & GLITCH TEXT */}
       <style dangerouslySetInnerHTML={{__html: `
         .transform-style-3d { transform-style: preserve-3d; }
         .backface-hidden { backface-visibility: hidden; }
         .perspective-[2000px] { perspective: 2000px; }
+
+        /* Glitch Text Integration Styles */
+        .glitch {
+          position: relative;
+          display: inline-block;
+          user-select: none;
+          white-space: nowrap;
+        }
+        .glitch::after,
+        .glitch::before {
+          content: attr(data-text);
+          position: absolute;
+          top: 0;
+          left: 0;
+          color: inherit;
+          background-color: transparent;
+          overflow: hidden;
+          clip-path: inset(0 0 0 0);
+        }
+        .glitch:not(.enable-on-hover)::after {
+          left: 3px;
+          text-shadow: var(--after-shadow, -3px 0 red);
+          animation: animate-glitch var(--after-duration, 3s) infinite linear alternate-reverse;
+        }
+        .glitch:not(.enable-on-hover)::before {
+          left: -3px;
+          text-shadow: var(--before-shadow, 3px 0 cyan);
+          animation: animate-glitch var(--before-duration, 2s) infinite linear alternate-reverse;
+        }
+        .glitch.enable-on-hover::after,
+        .glitch.enable-on-hover::before {
+          content: '';
+          opacity: 0;
+          animation: none;
+        }
+        .glitch.enable-on-hover:hover::after {
+          content: attr(data-text);
+          opacity: 1;
+          left: 3px;
+          text-shadow: var(--after-shadow, -3px 0 red);
+          animation: animate-glitch var(--after-duration, 3s) infinite linear alternate-reverse;
+        }
+        .glitch.enable-on-hover:hover::before {
+          content: attr(data-text);
+          opacity: 1;
+          left: -3px;
+          text-shadow: var(--before-shadow, 3px 0 cyan);
+          animation: animate-glitch var(--before-duration, 2s) infinite linear alternate-reverse;
+        }
+
+        @keyframes animate-glitch {
+          0% { clip-path: inset(20% 0 50% 0); }
+          5% { clip-path: inset(10% 0 60% 0); }
+          10% { clip-path: inset(15% 0 55% 0); }
+          15% { clip-path: inset(25% 0 35% 0); }
+          20% { clip-path: inset(30% 0 40% 0); }
+          25% { clip-path: inset(40% 0 20% 0); }
+          30% { clip-path: inset(10% 0 60% 0); }
+          35% { clip-path: inset(15% 0 55% 0); }
+          40% { clip-path: inset(25% 0 35% 0); }
+          45% { clip-path: inset(30% 0 40% 0); }
+          50% { clip-path: inset(20% 0 50% 0); }
+          55% { clip-path: inset(10% 0 60% 0); }
+          60% { clip-path: inset(15% 0 55% 0); }
+          65% { clip-path: inset(25% 0 35% 0); }
+          70% { clip-path: inset(30% 0 40% 0); }
+          75% { clip-path: inset(40% 0 20% 0); }
+          80% { clip-path: inset(20% 0 50% 0); }
+          85% { clip-path: inset(10% 0 60% 0); }
+          90% { clip-path: inset(15% 0 55% 0); }
+          95% { clip-path: inset(25% 0 35% 0); }
+          100% { clip-path: inset(30% 0 40% 0); }
+        }
       `}} />
 
-      {/* TOP NAVIGATION BAR */}
+      {}
       <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl">
         <div className="bg-white/70 backdrop-blur-3xl border border-white shadow-xl rounded-2xl flex items-center justify-between p-2 pl-6">
           <Logo />
@@ -139,13 +230,17 @@ export default function App() {
 
       <main className="relative z-10 w-full max-w-7xl mx-auto px-6">
         
-        {/* HERO SECTION */}
+        {}
         <section id="home" className="min-h-[90vh] flex items-center pt-32">
           <div className="w-full md:w-1/2 relative">
             <div className="absolute -inset-10 bg-white/80 blur-2xl rounded-full md:hidden z-[-1]" />
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
-              <h1 className="text-5xl md:text-7xl font-playfair mb-6 leading-[1.1] text-[#102A43]">
-                Build Skills.<br /> Build Portfolio.<br /> <span className="text-[#0B4F8C]">Build Your Future.</span>
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-playfair mb-6 leading-[1.1] text-[#102A43]">
+                Build Skills.<br /> Build Portfolio.<br /> 
+                <span className="text-[#0B4F8C]">
+                  {/* GlitchText component properly integrated and always active */}
+                  <GlitchText enableOnHover={false}>Build Your Future.</GlitchText>
+                </span>
               </h1>
               <p className="text-[#102A43]/70 max-w-sm mb-8 leading-relaxed font-inter">
                 Ideal for students and professionals looking to build a career in Architectural Visualization, BIM & Digital Construction.
@@ -157,7 +252,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* PROGRAM SECTION */}
+        {}
         <section id="program" className="min-h-screen flex items-center py-20">
           <div className="w-full md:w-1/2">
             <h2 className="text-4xl font-playfair mb-8 text-[#102A43]">Master Diploma in<br/>Architectural Visualization & BIM</h2>
@@ -181,7 +276,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* SOFTWARE SECTION */}
+        {}
         <section id="software" className="min-h-screen flex items-center py-20">
           <div className="w-full md:w-1/2">
             <h2 className="text-4xl font-playfair mb-8 text-[#102A43]">Software You<br/>Will Master</h2>
@@ -210,7 +305,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* BENEFITS SECTION */}
+        {}
         <section id="benefits" className="min-h-screen flex items-center py-20">
           <div className="w-full md:w-1/2">
             <h2 className="text-4xl font-playfair mb-8 text-[#102A43]">What You Will Get</h2>
@@ -240,7 +335,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* AUDIENCE SECTION */}
+        {}
         <section id="audience" className="min-h-screen flex items-center py-20">
           <div className="w-full md:w-1/2">
             <h2 className="text-4xl font-playfair mb-8 text-[#102A43]">Designed For</h2>
@@ -261,12 +356,11 @@ export default function App() {
           </div>
         </section>
 
-        {/* ENROLLMENT SECTION */}
+        {}
         <section id="enrollment" className="min-h-screen flex items-center py-20 relative z-20">
           <div className="w-full md:w-1/2">
             
             <div className="relative p-8 md:p-12 bg-white rounded-3xl shadow-2xl border border-[#102A43]/5 mt-10">
-              {/* Top Accent & Limited Seats Badge */}
               <div className="absolute top-0 left-0 w-full h-1 bg-[#16C5D8] rounded-t-3xl" />
               <div className="absolute -top-3 right-8 bg-[#16C5D8] text-white text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-md">
                 Limited Seats
@@ -328,7 +422,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* FOOTER */}
+        {}
         <footer className="w-full md:w-1/2 py-12 border-t border-[#102A43]/10 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-[#102A43]/50 uppercase tracking-widest relative z-20">
           <p>© 2026 MAVERIX ACADEMY.</p>
           <div className="flex gap-6">
@@ -339,10 +433,9 @@ export default function App() {
 
       </main>
 
-      {/* 3D BOOK ASSEMBLER */}
       <BookAssembler scrollYProgress={scrollYProgress} />
 
-      {/* MODALS */}
+      {}
       <AnimatePresence>
         {activeModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -402,7 +495,6 @@ const BookAssembler = ({ scrollYProgress }) => {
   const rotateX = useTransform(scrollYProgress, [0, 1], [25, 10]);
   const assembleProgress = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
-  // Shift the entire book down by 120px when exploded (at the top of the page) so the logo is clearly visible
   const masterY = useTransform(assembleProgress, [0, 1], [0, 120]);
 
   const xFront = useTransform(assembleProgress, [0, 1], [0, 300]);
@@ -424,19 +516,15 @@ const BookAssembler = ({ scrollYProgress }) => {
   const hudRotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
   const hudRotateReverse = useTransform(scrollYProgress, [0, 1], [0, -180]);
 
-  // Premium feature: Mouse tracking for dynamic tilt when user is not scrolling
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Smooth out the mouse movements using physics-based springs
   const smoothMouseX = useSpring(mouseX, { stiffness: 50, damping: 20, mass: 0.5 });
   const smoothMouseY = useSpring(mouseY, { stiffness: 50, damping: 20, mass: 0.5 });
 
   useEffect(() => {
     const handleMouseMove = (e) => {
       const { innerWidth, innerHeight } = window;
-      // Calculate rotation based on cursor position relative to the center of the screen
-      // Range is mapped to subtle rotation angles (-15 to +15 degrees)
       const rotateXVal = ((e.clientY / innerHeight) - 0.5) * -30; 
       const rotateYVal = ((e.clientX / innerWidth) - 0.5) * 30;
 
@@ -450,17 +538,15 @@ const BookAssembler = ({ scrollYProgress }) => {
 
   return (
     <div className="fixed top-0 right-0 w-full md:w-1/2 h-full pointer-events-none flex items-center justify-center z-0 perspective-[2000px] opacity-25 md:opacity-100 transition-opacity duration-300">
-      {/* Outer wrapper manages the macro scroll-based rotations */}
       <motion.div 
         style={{ rotateY, rotateX, y: masterY }}
         className="transform-style-3d scale-[0.6] sm:scale-75 md:scale-100 translate-x-[15%] md:translate-x-0"
       >
-        {/* Inner wrapper manages the micro mouse-based floating tilts */}
         <motion.div
           style={{ rotateX: smoothMouseY, rotateY: smoothMouseX }}
           className="relative w-[320px] h-[450px] transform-style-3d"
         >
-          {/* HUD ELEMENTS */}
+          {}
           <motion.div 
             style={{ rotateZ: hudRotate }}
             className="absolute inset-0 flex items-center justify-center pointer-events-none transform-style-3d z-[-10]"
@@ -471,13 +557,10 @@ const BookAssembler = ({ scrollYProgress }) => {
             <div className="w-[1000px] h-[1px] bg-gradient-to-r from-transparent via-[#16C5D8]/40 to-transparent absolute" />
             <div className="w-[1px] h-[1000px] bg-gradient-to-b from-transparent via-[#16C5D8]/40 to-transparent absolute" />
             
-            {/* MOBILE-ONLY EXTRA HUD DETAILS */}
             <div className="absolute inset-0 flex items-center justify-center md:hidden">
-              {/* Extra technical circles */}
               <div className="w-[700px] h-[700px] absolute border border-[#16C5D8]/10 rounded-full" />
               <div className="w-[500px] h-[500px] absolute border-[2px] border-dotted border-[#0B4F8C]/30 rounded-full" />
               
-              {/* Polar Grid / Axes */}
               <div className="w-[1200px] h-[1px] bg-[#16C5D8]/20 absolute rotate-45" />
               <div className="w-[1200px] h-[1px] bg-[#16C5D8]/20 absolute -rotate-45" />
               <div className="w-[1200px] h-[1px] bg-[#0FA3B1]/10 absolute rotate-[30deg]" />
@@ -485,17 +568,14 @@ const BookAssembler = ({ scrollYProgress }) => {
               <div className="w-[1200px] h-[1px] bg-[#0FA3B1]/10 absolute -rotate-[30deg]" />
               <div className="w-[1200px] h-[1px] bg-[#0FA3B1]/10 absolute -rotate-[60deg]" />
               
-              {/* Angle Notations */}
               <span className="absolute top-[18%] left-[25%] text-[#0FA3B1]/70 font-mono text-[10px] bg-white/20 px-1 rounded backdrop-blur-sm">∡ 45°</span>
               <span className="absolute bottom-[18%] right-[25%] text-[#0FA3B1]/70 font-mono text-[10px] bg-white/20 px-1 rounded backdrop-blur-sm">∡ 225°</span>
               <span className="absolute top-[28%] right-[20%] text-[#0FA3B1]/70 font-mono text-[10px] bg-white/20 px-1 rounded backdrop-blur-sm">∡ 315°</span>
               
-              {/* Center target node */}
               <div className="w-[200px] h-[200px] absolute border border-[#16C5D8]/20 rounded-full flex items-center justify-center">
                    <div className="w-[10px] h-[10px] border border-[#16C5D8]/50 rounded-full" />
               </div>
               
-              {/* Extra Data Labels */}
               <span className="absolute top-[-120px] right-[50px] text-[#16C5D8]/70 font-mono text-[10px] tracking-widest border border-[#16C5D8]/30 px-2 py-1 rounded bg-white/20 backdrop-blur-sm">
                 VECTOR_FIELD: ON
               </span>
@@ -515,6 +595,7 @@ const BookAssembler = ({ scrollYProgress }) => {
             <span className="absolute bottom-[-50px] left-[-150px] text-[#16C5D8]/60 font-mono text-[10px] tracking-widest">RENDER_PASS: ACTIVE</span>
           </motion.div>
 
+          {}
           {/* FRONT COVER (Updated to White background) */}
           <motion.div 
             style={{ x: xFront, y: yFront, z: zFront }}
@@ -526,7 +607,7 @@ const BookAssembler = ({ scrollYProgress }) => {
               <img 
                 src={logo}
                 alt="Maverix Logo" 
-                className="w-24 h-24 object-contain mb-6"
+                className="w-24 h-24 object-contain mb-6 rounded"
                 onError={(e) => e.target.style.display = 'none'}
               />
               <h1 className="text-2xl font-playfair text-[#102A43] tracking-widest text-center">
@@ -542,7 +623,7 @@ const BookAssembler = ({ scrollYProgress }) => {
             </div>
           </motion.div>
 
-          {/* PAGE 1 */}
+          {}
           <motion.div 
             style={{ x: xPage1, y: yPage1, z: zPage1 }}
             className="absolute inset-0 bg-white rounded-r-xl shadow-lg border-l border-[#102A43]/10 overflow-hidden transform-style-3d"
@@ -562,7 +643,6 @@ const BookAssembler = ({ scrollYProgress }) => {
             </div>
           </motion.div>
 
-          {/* PAGE 2 */}
           <motion.div 
             style={{ x: xPage2, y: yPage2, z: zPage2 }}
             className="absolute inset-0 bg-white rounded-r-xl shadow-lg border-l border-[#102A43]/10 overflow-hidden transform-style-3d"
@@ -582,7 +662,7 @@ const BookAssembler = ({ scrollYProgress }) => {
             </div>
           </motion.div>
 
-          {/* BACK COVER */}
+          {}
           <motion.div 
             style={{ x: xBack, y: yBack, z: zBack }}
             className="absolute inset-0 bg-[#102A43] rounded-r-2xl shadow-xl border-r border-[#102A43] transform-style-3d flex items-center justify-center"
@@ -591,7 +671,7 @@ const BookAssembler = ({ scrollYProgress }) => {
             <img 
               src={logo}
               alt="Maverix Logo" 
-              className="w-12 h-12 object-contain opacity-20 filter grayscale"
+              className="w-12 h-12 object-contain opacity-20 filter grayscale rounded"
               onError={(e) => e.target.style.display = 'none'}
             />
           </motion.div>
